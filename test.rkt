@@ -16,3 +16,5 @@
   (λ (x) (* x x)))
 
 (square 5)
+
+; I wonder what will happen now?
