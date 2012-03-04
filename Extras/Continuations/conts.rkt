@@ -3,8 +3,6 @@
 (provide amb
          assert)
 
-(define a 1)
-
 (define (current-continuation) 
   (call-with-current-continuation 
    (lambda (cc)
@@ -35,7 +33,7 @@
 ; (assert condition) will cause
 ; condition to be true, and if there
 ; is no way to make it true, then
-; it signals and error in the program.
+; it signals an error in the program.
 (define (assert condition)
   (if (not condition)
       (fail)
