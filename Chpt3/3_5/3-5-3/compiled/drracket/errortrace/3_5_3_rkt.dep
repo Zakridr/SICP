@@ -1,0 +1,1 @@
+("5.1.1" ("dac57e56251184b80774d00aad210309816d0e1a" . "56c60731c6e9c377c9c77903c8da2912fe9a607f") (collects #"errortrace" #"errortrace-key.rkt") (collects #"racket" #"main.rkt") #"/Users/Zach/Projects/sicp/Chpt3/3_5/3-5-3/../3-5-2/3_5_2.rkt" (collects #"racket" #"lang" #"reader.rkt"))
