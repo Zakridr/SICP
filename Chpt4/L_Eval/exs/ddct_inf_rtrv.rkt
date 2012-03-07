@@ -223,4 +223,14 @@
       (and ((?rest grandson) ?gg ?f)
            (grandson ?f ?s)))
 
-(
+; the above is no good...
+; determine whether the last element of a list is 'son
+; perhaps?
+(rule (ends-in-x ?x (?x)))
+(rule (ends-in-x ?x (?car . ?cdr))
+      (ends-in-x ?x ?cdr))
+
+(rule ((great . ?rel) ?x ?y)
+      (and (ends-in-x son ?rel)
+           (?rel ?z ?y)
+           (son ?x ?z)))
