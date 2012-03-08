@@ -1,5 +1,12 @@
 #lang racket
 
+(require "syntax.rkt"
+         "database.rkt"
+         "stream-ops.rkt"
+         "qeval.rkt"
+         "database.rkt")
+
+
 (define input-prompt ";;; Query input:")
 (define output-prompt ";;; Query results:")
 
