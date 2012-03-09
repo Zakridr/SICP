@@ -62,9 +62,7 @@
 (define (rest-disjuncts exps) (cdr exps))
 
 ; not
-; was car, changed to cdr
-; I think car is wrong...
-(define (negated-query exps) (cdr exps))
+(define (negated-query exps) (car exps))
 
 ; lisp-predicate
 

@@ -1,56 +1,56 @@
-(assert! ((address (Bitdiddle Ben) (Slumerville (Ridge Road) 10))) )
-(assert! ((job (Bitdiddle Ben) (computer wizard))) )
-(assert! ((salary (Bitdiddle Ben) 60000)) )
+(assert! (address (Bitdiddle Ben) (Slumerville (Ridge Road) 10)))
+(assert! (job (Bitdiddle Ben) (computer wizard)))
+(assert! (salary (Bitdiddle Ben) 60000))
 
-(assert! ((address (Hacker Alyssa P) (Cambridge (Mass Ave) 78))) )
-(assert! ((job (Hacker Alyssa P) (computer programmer))) )
-(assert! ((salary (Hacker Alyssa P) 40000)) )
-(assert! ((supervisor (Hacker Alyssa P) (Bitdiddle Ben))) )
+(assert! (address (Hacker Alyssa P) (Cambridge (Mass Ave) 78)))
+(assert! (job (Hacker Alyssa P) (computer programmer)))
+(assert! (salary (Hacker Alyssa P) 40000))
+(assert! (supervisor (Hacker Alyssa P) (Bitdiddle Ben)))
 
-(assert! ((address (Fect Cy D) (Cambridge (Ames Street) 3))) )
-(assert! ((job (Fect Cy D) (computer programmer))) )
-(assert! ((salary (Fect Cy D) 35000)) )
-(assert! ((supervisor (Fect Cy D) (Bitdiddle Ben))) )
+(assert! (address (Fect Cy D) (Cambridge (Ames Street) 3)))
+(assert! (job (Fect Cy D) (computer programmer)))
+(assert! (salary (Fect Cy D) 35000))
+(assert! (supervisor (Fect Cy D) (Bitdiddle Ben)))
 
-(assert! ((address (Tweakit Lem E) (Boston (Bay State Road) 22))) )
-(assert! ((job (Tweakit Lem E) (computer technician))) )
-(assert! ((salary (Tweakit Lem E) 25000)) )
-(assert! ((supervisor (Tweakit Lem E) (Bitdiddle Ben))) )
+(assert! (address (Tweakit Lem E) (Boston (Bay State Road) 22)))
+(assert! (job (Tweakit Lem E) (computer technician)))
+(assert! (salary (Tweakit Lem E) 25000))
+(assert! (supervisor (Tweakit Lem E) (Bitdiddle Ben)))
 
-(assert! ((address (Reasoner Louis) (Slumerville (Pine Tree Road) 80))) )
-(assert! ((job (Reasoner Louis) (computer programmer trainee))) )
-(assert! ((salary (Reasoner Louis) 30000)) )
-(assert! ((supervisor (Reasoner Louis) (Hacker Alyssa P))) )
+(assert! (address (Reasoner Louis) (Slumerville (Pine Tree Road) 80)))
+(assert! (job (Reasoner Louis) (computer programmer trainee)))
+(assert! (salary (Reasoner Louis) 30000))
+(assert! (supervisor (Reasoner Louis) (Hacker Alyssa P)))
 
-(assert! ((supervisor (Bitdiddle Ben) (Warbucks Oliver))) )
+(assert! (supervisor (Bitdiddle Ben) (Warbucks Oliver)))
 
-(assert! ((address (Warbucks Oliver) (Swellesly (Top Heap Road)))) )
-(assert! ((job (Warbucks Oliver) (administration big wheel))) )
-(assert! ((salary (Warbucks Oliver) 150000)) )
+(assert! (address (Warbucks Oliver) (Swellesly (Top Heap Road))))
+(assert! (job (Warbucks Oliver) (administration big wheel)))
+(assert! (salary (Warbucks Oliver) 150000))
 
-(assert! ((address (Scrooge Eben) (Weston (Shady Lane) 10))) )
-(assert! ((job (Scrooge Eben) (accounting chief accountant))) )
-(assert! ((salary (Scrooge Eben) 75000)) )
-(assert! ((supervisor (Scrooge Eben) (Warbucks Oliver))) )
+(assert! (address (Scrooge Eben) (Weston (Shady Lane) 10)))
+(assert! (job (Scrooge Eben) (accounting chief accountant)))
+(assert! (salary (Scrooge Eben) 75000))
+(assert! (supervisor (Scrooge Eben) (Warbucks Oliver)))
 
-(assert! ((address (Cratchet Robert) (Allston (N Harvard Street) 16))) )
-(assert! ((job (Cratchet Robert) (accounting scrivener))) )
-(assert! ((salary (Cratchet Robert) 18000)) )
-(assert! ((supervisor (Cratchet Robert) (Scrooge Eben))) )
+(assert! (address (Cratchet Robert) (Allston (N Harvard Street) 16)))
+(assert! (job (Cratchet Robert) (accounting scrivener)))
+(assert! (salary (Cratchet Robert) 18000))
+(assert! (supervisor (Cratchet Robert) (Scrooge Eben)))
 
-(assert! ((address (Aull Dewitt) (Slumerville (Onion Square) 5))) )
-(assert! ((job (Aull Dewitt) (administration secretary))) )
-(assert! ((salary (Aull Dewitt) 25000)) )
-(assert! ((supervisor (Aull Dewitt) (Warbucks Oliver))) )
+(assert! (address (Aull Dewitt) (Slumerville (Onion Square) 5)))
+(assert! (job (Aull Dewitt) (administration secretary)))
+(assert! (salary (Aull Dewitt) 25000))
+(assert! (supervisor (Aull Dewitt) (Warbucks Oliver)))
 
-(assert! ((can-do-job (computer wizard) (computer programmer))) )
-(assert! ((can-do-job (computer wizard) (computer technician))) )
-(assert! ((can-do-job (computer programmer) (computer programmer trainee))) )
-(assert! ((can-do-job (administration secretary) (administration big wheel))) )
+(assert! (can-do-job (computer wizard) (computer programmer)))
+(assert! (can-do-job (computer wizard) (computer technician)))
+(assert! (can-do-job (computer programmer) (computer programmer trainee)))
+(assert! (can-do-job (administration secretary) (administration big wheel)))
 
 ; 4.55
 ; 1 : all supervised by Ben Bitdiddle
-;(supervisor ?x (Ben Bitdiddle))
+;(supervisor ?x (Bitdiddle Ben))
 
 ;2 all accountants
 ;(job ?person (accounting . ?subtype))
@@ -74,11 +74,11 @@
 ;
 ;; 4.56
 ;;a. supervised by Ben Bitddile w/ address
-;(and (supervisor ?person (Ben Bitddile))
+;(and (supervisor ?person (Bitdiddle Ben))
 ;     (address ?person ?where))
 ;
 ;;b all peopple with salary less than BB's, along with their salary and BB's
-;(and (salary (Ben Bitddile) ?bb-sal)
+;(and (salary (Bitdiddle Ben) ?bb-sal)
 ;     (salary ?x ?x-sal)
 ;     (lisp-value > ?bb-sal ?x-sal))
 ;
@@ -102,19 +102,26 @@
 ;
 ;; general rule form: (rule <conclusion> <body>)
 ;
-;(rule (outranked-by ?staff-person ?boss)
-;      (or (supervisor ?staff-person ?boss)
-;          (and (supervisor ?staff-person ?middle-manager)
-;               (outranked-by ?middle-manager ?boss))))
+(rule (outranked-by ?staff-person ?boss)
+      (or (supervisor ?staff-person ?boss)
+          (and (supervisor ?staff-person ?middle-manager)
+               (outranked-by ?middle-manager ?boss))))
+
+(rule (dork ben-bit))
+(dork ?x)
+
+(outranked-by ?x ?y)
 ;
 ;; 4.57
-;(rule (can-replace ?p1 ?p2)
-;      (and (and (job ?p1 ?j1)
-;                (job ?p2 ?j2)
-;                (or (can-do-job ?j1 ?j2)
-;                    (same ?j1 ?j2)))
-;           (not (same ?p1 ?p2))))
-;(can-replace ?x (Fect Cy D))
+(can-do-job ?x ?y)
+(can-do-job (computer wizard) ?x)
+(rule (can-replace ?p1 ?p2)
+      (and (and (job ?p1 ?j1)
+                (job ?p2 ?j2)
+                (or (can-do-job ?j1 ?j2)
+                    (same ?j1 ?j2)))
+           (not (same ?p1 ?p2))))
+(can-replace ?x ?y)
 ;(and (can-replace ?p1 ?p2)
 ;     (salary ?p1 ?s1)
 ;     (salary ?p2 ?s2)

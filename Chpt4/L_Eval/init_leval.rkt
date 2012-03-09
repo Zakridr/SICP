@@ -16,14 +16,17 @@
 (define (query-driver-loop)
   (prompt-for-input input-prompt)
   (let ((q (query-syntax-process (read))))
+;    (display q)
     (cond ((assertion-to-be-added? q)
            (add-rule-or-assertion! (add-assertion-body q))
            (newline)
            (display "Assertion added to data base.")
            (query-driver-loop))
           (else
+;            (display "We're processing a query")
             (newline)
             (display output-prompt)
+;            (display "About to process query...")
             (display-stream
               (stream-map
                 (lambda (frame)
