@@ -129,7 +129,7 @@
   (hash-set! table (cons key1 key2) item))
 
 (define (get key1 key2)
-  (hash-ref table (cons key1 key2)))
+  (hash-ref table (cons key1 key2) false))
 
 ; 4.70
 ; the purpose of the let bindings in the procedures add-(assertion|rule)!

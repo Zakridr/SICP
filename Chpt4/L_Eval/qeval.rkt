@@ -1,6 +1,7 @@
 #lang racket
 
-(provide qeval)
+(provide qeval
+         instantiate-t)
 
 (require "database.rkt"
          "syntax.rkt"
@@ -53,7 +54,7 @@
   (stream-flatmap
     (lambda (frame)
       (if (execute
-            (instantiate call 
+            (instantiate-t call 
                          frame 
                          (lambda (v f) 
                            (error "Unknown pat var - LISP-VALUE" v))))
@@ -191,3 +192,16 @@
                (tree-walk (cdr e))))
           (else false)))
   (tree-walk exp))
+
+(define (instantiate-t exp frame unbound-var-handler)
+  (define (copy exp)
+    (cond ((var? exp)
+           (let ((binding (binding-in-frame exp frame)))
+             (if binding
+               (copy (binding-value binding))
+               (unbound-var-handler exp frame))))
+          ((pair? exp)
+           (cons (copy (car exp)) (copy (cdr exp))))
+          (else exp)))
+  (copy exp))
+
