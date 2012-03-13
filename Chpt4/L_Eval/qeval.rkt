@@ -16,6 +16,7 @@
       (qproc (contents query) frame-stream)
       (simple-query query frame-stream))))
 
+; handles queries with no operators (just a single pattern)
 (define (simple-query query-pattern frame-stream)
   (stream-flatmap
     (lambda (frame)
