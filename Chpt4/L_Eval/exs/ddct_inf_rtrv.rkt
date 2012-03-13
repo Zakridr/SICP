@@ -89,50 +89,53 @@
 ;
 ;; rules
 ;
-;(rule (lives-near ?person-1 ?person-2)
-;      (and (address ?person-1 (?town . ?rest-1))
-;           (address ?person-2 (?town . ?rest-2))
-;           (not (same ?person-1 ?person-2))))
+(assert! (rule (same ?x ?x)))
+(assert! (rule (lives-near ?person-1 ?person-2)
+      (and (address ?person-1 (?town . ?rest-1))
+           (address ?person-2 (?town . ?rest-2))
+           (not (same ?person-1 ?person-2)))))
 ;
-;(rule (same ?x ?x))
+;;(lives-near ?x ?y)
 ;
-;(rule (wheel ?person)
+;(assert! (rule (wheel ?person)
 ;      (and (supervisor ?middle-manager ?person)
-;           (supervisor ?x ?middle-manager)))
+;           (supervisor ?x ?middle-manager))))
 ;
+;(wheel ?who)
 ;; general rule form: (rule <conclusion> <body>)
 ;
-(rule (outranked-by ?staff-person ?boss)
-      (or (supervisor ?staff-person ?boss)
-          (and (supervisor ?staff-person ?middle-manager)
-               (outranked-by ?middle-manager ?boss))))
-
-(rule (dork ben-bit))
-(dork ?x)
-
-(outranked-by ?x ?y)
+;(rule (outranked-by ?staff-person ?boss)
+;      (or (supervisor ?staff-person ?boss)
+;          (and (supervisor ?staff-person ?middle-manager)
+;               (outranked-by ?middle-manager ?boss))))
 ;
-;; 4.57
-(can-do-job ?x ?y)
-(can-do-job (computer wizard) ?x)
-(rule (can-replace ?p1 ?p2)
+;(rule (dork ben-bit))
+;(dork ?x)
+;
+;(outranked-by ?x ?y)
+;;
+;;; 4.57
+;(can-do-job ?x ?y)
+;(can-do-job (computer wizard) ?x)
+(assert! (rule (can-replace ?p1 ?p2)
       (and (and (job ?p1 ?j1)
                 (job ?p2 ?j2)
                 (or (can-do-job ?j1 ?j2)
                     (same ?j1 ?j2)))
-           (not (same ?p1 ?p2))))
-(can-replace ?x ?y)
-;(and (can-replace ?p1 ?p2)
-;     (salary ?p1 ?s1)
-;     (salary ?p2 ?s2)
-;     (lisp-value < ?s1 ?s2))
+           (not (same ?p1 ?p2)))))
+(can-replace ?x (Fect Cy D))
+(and (can-replace ?p1 ?p2)
+     (salary ?p1 ?s1)
+     (salary ?p2 ?s2)
+     (lisp-value < ?s1 ?s2))
 ;
 ;; 4.58
 ;
-;(rule (big-shot ?person ?division)
-;      (and (job ?person (?div . ?type))
-;           (not (and (supervisor ?person ?manager)
-;                     (job ?manager (?div . ?other))))))
+(assert! (rule (big-shot ?person ?div)
+      (and (job ?person (?div . ?type))
+           (not (and (supervisor ?person ?manager)
+                     (job ?manager (?div . ?other)))))))
+;(big-shot ?x ?y)
 ;
 ;; 4.59
 ;(meeting accounting (Monday 9am))
@@ -158,11 +161,11 @@
 ;
 ;
 ;; 4.64
-;(rule (outranked-by ?staff ?boss)
+;(assert! (rule (outranked-by ?staff ?boss)
 ;      (or (supervisor ?staff ?boss)
 ;          (and (outranked-by ?middle-manager ?boss)
 ;               (supervisor ?staff
-;                           ?middle-manager))))
+;                           ?middle-manager)))))
 ;
 ;(outranked-by (Bitdiddle Ben) ?who)
 ;
@@ -218,11 +221,28 @@
 ;; implement (reverse) rule
 ;(rule (reverse () ()))
 ;
-;(rule (reverse (?u . ?v) (?z . ?w))
-;      (or (and (append-to-form ?r ?u (?z . ?w))
-;               (reverse ?v ?r))
-;          (and (append-to-form ?l ?z (?u . ?v))
-;               (reverse ?l ?w))))
+(assert! (rule (append-to-form () ?y ?y)))
+
+(assert! (rule (append-to-form (?u . ?v) ?y (?u . ?z))
+      (append-to-form ?v ?y ?z)))
+
+(append-to-form ?x ?y (1 2 3 4))
+
+(assert! (rule (reverse (?u . ?v) ?z)
+               (and (reverse ?v ?r)
+                    (append-to-form ?r (?u) ?z))))
+
+(assert! (rule (reverse () () )))
+(?x () () ?z)
+
+(reverse (1 2 3) ?x)
+
+; Only recurses on the first element, I need first guy to be defined
+
+;(reverse (1) ?x)
+
+;(reverse (1 2 3) ?x)
+;(reverse ?x (1 2 3))
 ;
 ;; 4.69
 ;; not allowed...
@@ -233,11 +253,50 @@
 ;; the above is no good...
 ;; determine whether the last element of a list is 'son
 ;; perhaps?
-;(rule (ends-in-x ?x (?x)))
-;(rule (ends-in-x ?x (?car . ?cdr))
-;      (ends-in-x ?x ?cdr))
+;(assert! (rule (ends-in-x ?x (?x))))
+;(assert! (rule (ends-in-x ?x (?car . ?cdr))
+;      (ends-in-x ?x ?cdr)))
+(assert! (rule (ends-in-grandson ?x)
+      (and (reverse ?x ?r)
+           (same ?r (?u . ?v))
+           (same ?u grandson))))
+
+(assert! (rule (last ?lst ?final)
+               (and (reverse ?lst ?r)
+                    (same ?r (?u . ?v))
+                    (same ?u ?final))))
+
+; directly:
+(assert! (rule (alt-last (?car . ?cdr) ?final)
+               (or (and (same ?cdr (?final)))
+                   (alt-last ?cdr ?final))))
+
+
+(assert! (son Adam Cain) )
+(assert! (son Cain Enoch) )
+(assert! (son Enoch Irad) )
+(assert! (son Irad Mehujael) )
+(assert! (son Mehujael Methushael) )
+(assert! (son Methushael Lamech) )
+(assert! (wife Lamech Ada))
+
+(assert! (son Ada Jabal) )
+(assert! (son Ada Jubal))
+
+(ends-in-grandson (1 2 3 grandson))
+(last (1 2 3 4) ?x)
+(alt-last (1 2) ?x)
+;(alt-last ?lst 1)
 ;
-;(rule ((great . ?rel) ?x ?y)
-;      (and (ends-in-x son ?rel)
-;           (?rel ?z ?y)
-;           (son ?x ?z)))
+(assert! (rule ((grandson) ?g ?s)
+      (and (son ?f ?s)
+           (son ?g ?f))))
+
+(assert! (rule ((great . ?rel) ?x ?y)
+      (and (?rel ?z ?y)
+           (son ?x ?z))))
+
+(grandson ?x ?y)
+((great grandson) ?g ?ggs)
+
+;(?rel Adam Irad)
