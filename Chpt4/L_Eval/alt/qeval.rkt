@@ -7,6 +7,12 @@
          "syntax.rkt"
          "stream-ops.rkt")
 
+(define (interleave s1 s2)
+  (if (stream-empty? s1)
+    s2
+    (stream-cons (stream-first s1)
+                 (interleave s2 (stream-rest s1)))))
+
 ; identify special forms by data directed dispatch...
 ; can use a hash table, right
 ; or just a regular table...
@@ -20,9 +26,8 @@
 (define (simple-query query-pattern frame-stream)
   (stream-flatmap
     (lambda (frame)
-      (stream-append-delayed
-        (find-assertions query-pattern frame)
-        (delay (apply-rules query-pattern frame))))
+      (stream-append (find-assertions query-pattern frame)
+                     (apply-rules query-pattern frame)))
     frame-stream))
 
 (define (conjoin conjuncts frame-stream)
@@ -36,29 +41,28 @@
 (define (disjoin disjuncts frame-stream)
   (if (empty-disjunction? disjuncts)
     the-empty-stream
-    (interleave-delayed
+    (interleave 
       (qeval (first-disjunct disjuncts) frame-stream)
-      (delay (disjoin (rest-disjuncts disjuncts)
-                      frame-stream)))))
+      (disjoin (rest-disjuncts disjuncts) frame-stream))))
 
 (define (negate operands frame-stream)
-  (simple-stream-flatmap
+  (stream-flatmap
     (lambda (frame)
       (if (stream-empty? (qeval (negated-query operands)
-                               (singleton-stream frame)))
+                                (singleton-stream frame)))
         (singleton-stream frame)
         the-empty-stream))
     frame-stream))
 
 ; bad syntax here???
 (define (lisp-value call frame-stream)
-  (simple-stream-flatmap
+  (stream-flatmap
     (lambda (frame)
       (if (execute
             (instantiate-t call 
-                         frame 
-                         (lambda (v f) 
-                           (error "Unknown pat var - LISP-VALUE" v))))
+                           frame 
+                           (lambda (v f) 
+                             (error "Unknown pat var - LISP-VALUE" v))))
         (singleton-stream frame)
         the-empty-stream))
     frame-stream))
@@ -83,7 +87,7 @@
 ; pattern matcher refugees..
 
 (define (find-assertions pattern frame)
-  (simple-stream-flatmap
+  (stream-flatmap
     (lambda (datum)
       (check-an-assertion datum pattern frame))
     (fetch-assertions pattern frame)))

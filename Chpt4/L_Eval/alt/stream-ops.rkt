@@ -6,8 +6,7 @@
   singleton-stream
   stream-append-delayed
   stream-flatmap
-  the-empty-stream
-  simple-stream-flatmap)
+  the-empty-stream)
 
 (define the-empty-stream '())
 
@@ -44,11 +43,3 @@
 
 (define (singleton-stream x)
   (stream-cons x the-empty-stream))
-
-(define (simple-stream-flatmap proc s)
-  (simple-flatten (stream-map proc s)))
-
-(define (simple-flatten stream)
-  (stream-map (lambda (s) (stream-first s))
-              (stream-filter (lambda (s) (not (stream-empty? s))) 
-                             stream)))

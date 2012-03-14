@@ -97,22 +97,22 @@
 
 (lives-near ?x ?y)
 
-(assert! (rule (wheel ?person)
-      (and (supervisor ?middle-manager ?person)
-           (supervisor ?x ?middle-manager))))
+;(assert! (rule (wheel ?person)
+;      (and (supervisor ?middle-manager ?person)
+;           (supervisor ?x ?middle-manager))))
 
-(wheel ?who)
+;(wheel ?who)
 ; general rule form: (rule <conclusion> <body>)
 
-(rule (outranked-by ?staff-person ?boss)
-      (or (supervisor ?staff-person ?boss)
-          (and (supervisor ?staff-person ?middle-manager)
-               (outranked-by ?middle-manager ?boss))))
+;(rule (outranked-by ?staff-person ?boss)
+;      (or (supervisor ?staff-person ?boss)
+;          (and (supervisor ?staff-person ?middle-manager)
+;               (outranked-by ?middle-manager ?boss))))
 
-(rule (dork ben-bit))
-(dork ?x)
+;(rule (dork ben-bit))
+;(dork ?x)
 
-(outranked-by ?x ?y)
+;(outranked-by ?x ?y)
 
 ; 4.57
 (can-do-job ?x ?y)
@@ -182,13 +182,13 @@
 ; back, more or less. This then goes through again... and again...
 
 ; 4.65
-(wheel ?who)
 
 
-(rule (wheel ?person)
+(assert! (rule (wheel ?person)
       (and (supervisor ?middle-manager ?person)
-           (supervisor ?x ?middle-manager)))
+           (supervisor ?x ?middle-manager))))
 
+(wheel ?who)
 ; Trace through execution. Warbucks supervises BB, who supervises 3 people
 ; -> his name comes up three times there.
 ; Warbucks supervises Scrooge who supervises Cratchet -> his name comes
