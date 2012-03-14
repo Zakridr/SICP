@@ -41,24 +41,33 @@
       (delay (disjoin (rest-disjuncts disjuncts)
                       frame-stream)))))
 
+(define (uniquely-asserted assertion frame-stream)
+  (simple-stream-flatmap
+    (lambda (frame)
+      (let ((result-stream (qeval (unique-query assertion)
+                                  (singleton-stream frame))))
+        (if (singleton-stream? result-stream)
+          result-stream
+          the-empty-stream)))
+    frame-stream))
+
 (define (negate operands frame-stream)
   (simple-stream-flatmap
     (lambda (frame)
       (if (stream-empty? (qeval (negated-query operands)
-                               (singleton-stream frame)))
+                                (singleton-stream frame)))
         (singleton-stream frame)
         the-empty-stream))
     frame-stream))
 
-; bad syntax here???
 (define (lisp-value call frame-stream)
   (simple-stream-flatmap
     (lambda (frame)
       (if (execute
             (instantiate-t call 
-                         frame 
-                         (lambda (v f) 
-                           (error "Unknown pat var - LISP-VALUE" v))))
+                           frame 
+                           (lambda (v f) 
+                             (error "Unknown pat var - LISP-VALUE" v))))
         (singleton-stream frame)
         the-empty-stream))
     frame-stream))
@@ -72,13 +81,12 @@
 
 (define (always-true ignore frame-stream) frame-stream)
 
-; need a method for dealing with this data directed dispatch..
-; might be an issue with when, exactly, negate gets defined...
 (put 'and 'qeval conjoin)
 (put 'or 'qeval disjoin)
 (put 'not 'qeval negate)
 (put 'lisp-value 'qeval lisp-value)
 (put 'always-true 'qeval always-true)
+(put 'unique 'qeval uniquely-asserted)
 
 ; pattern matcher refugees..
 
@@ -145,7 +153,7 @@
 
 ; as it stands, this is rather unnecessary.
 ; This guy only has one extra clause to check that
-; p2 is a var, other then that it's exactly the same as the                
+; p2 is a var, other than that it's exactly the same as the                
 ; pattern matcher...
 (define (unify-match p1 p2 frame)
   (cond ((eq? frame 'failed) 'failed)

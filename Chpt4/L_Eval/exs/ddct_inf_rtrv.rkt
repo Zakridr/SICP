@@ -195,3 +195,12 @@
 ; up again.
 ; BB only has one minion w/ a minion: Hacker who supervises Louis.
 
+; 4.75
+; syntax for singleton results
+(unique (job (Bitdiddle Ben) ?x))
+
+(unique (job ?x (computer programmer)))
+(and (job ?x ?j) (unique (job ?anyone ?j)))
+
+(and (supervisor ?minion ?boss)
+     (unique (supervisor ?anyone ?boss)))

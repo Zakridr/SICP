@@ -26,7 +26,8 @@
   rule?
   tagged-list?
   type
-  var?)
+  var?
+  unique-query)
 
 (define (tagged-list? exp tag)
   (if (pair? exp)
@@ -68,6 +69,9 @@
 
 (define (predicate exps) (car exps))
 (define (args exps) (cdr exps))
+
+; unique
+(define (unique-query exps) (car exps))
 
 ; rules
 
