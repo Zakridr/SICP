@@ -81,19 +81,39 @@
       (let ((result (extend-if-possible (binding-variable binding)
                                         (binding-value binding)
                                         frame2)))
+        ;(printf "Got inside second let\n")
         (if (eq? 'failed result)
           the-empty-stream
-          (merge-frames (cdr frame1) frame2))))))
+          (merge-frames (cdr frame1) result))))))
 
 (define (new-conjoin conjuncts frame-stream)
+;  (printf "Conjuncts are:~a\n" conjuncts)
   (if (empty? conjuncts)
       frame-stream
       (let ((first-stream (qeval (first-conjunct conjuncts) frame-stream)))
+        (stream-print 10 first-stream)
         (if (empty? (rest-conjuncts conjuncts))
           first-stream
-          (simple-stream-flatmap merge-frames 
+          (simple-stream-flatmap (lambda (frame-pair)
+                                   (merge-frames (car frame-pair)
+                                                 (cadr frame-pair)))
                                  (stream-join first-stream
                                               (new-conjoin (rest-conjuncts conjuncts) frame-stream)))))))
+
+(define (newer-conjoin conjuncts frame-stream)
+  (if (empty? conjuncts)
+    frame-stream
+    (let ((first-stream (qeval (first-conjunct conjuncts) frame-stream))
+          (second-stream (newer-conjoin (rest-conjuncts conjuncts) frame-stream)))
+            ;(qeval (first-conjunct (rest-conjuncts conjuncts)) frame-stream)))
+      (stream-filter (lambda (f)
+                       (not (stream-empty? f)))
+                     (stream-flatmap (lambda (f1)
+                                       (stream-map (lambda (f2)
+                                                     (merge-frames f1 f2))
+                                                   second-stream))
+                                     first-stream)))))
+
 
 ; stream-join should join two streams in a sql sense, apply 
 
@@ -106,6 +126,7 @@
 (define (always-true ignore frame-stream) frame-stream)
 
 (put 'and 'qeval conjoin)
+(put 'and-new 'qeval newer-conjoin)
 (put 'or 'qeval disjoin)
 (put 'not 'qeval negate)
 (put 'lisp-value 'qeval lisp-value)
@@ -193,6 +214,7 @@
         (else 'failed)))
 
 (define (extend-if-possible var val frame)
+  ;(printf "Entering extend-if-possible..\n")
   (let ((binding (binding-in-frame var frame)))
     (cond (binding
             (unify-match
@@ -238,3 +260,24 @@
           (else exp)))
   (copy exp))
 
+; test stuff
+
+(define f1 '(((? x) . john)))
+(define f2 '(((? y) . mary) ((? x) . john)) )
+
+;(merge-frames f1 f2)
+(define f '((((? x) . john)) ((? y) . mary) ((? x) . john)))
+
+;(merge-frames (car f)
+;              (cdr f))
+(define test-cjs '((job (? x) baker) (wife (? x) (? y))))
+(define test-fs the-empty-stream)
+;(add-assertion! '(assert! (job john baker)))
+;(add-assertion! '(assert! (wife john mary)))
+;
+;(stream-print 10 (new-conjoin test-cjs test-fs))
+
+(define f3 '(((? x) . 4)))
+(define f4 '(((? y) . happy) ((? x) . 6)))
+
+(merge-frames f3 f4)

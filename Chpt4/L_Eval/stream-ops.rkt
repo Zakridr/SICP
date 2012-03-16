@@ -9,7 +9,8 @@
   the-empty-stream
   simple-stream-flatmap
   singleton-stream?
-  stream-join)
+  stream-join
+  stream-print)
 
 (define the-empty-stream '())
 
@@ -72,13 +73,20 @@
 ;; test function
 
 (define (stream-print num-values s1)
-  (if (and (> num-values 0) (not (stream-empty? s1)))
-    (begin (printf "~a\n" (stream-first s1))
-           (stream-print (- num-values 1)
-                         (stream-rest s1)))
-    (printf "End of stream\n")))
+    (cond ((<= num-values 0)
+           (printf "Done printing\n"))
+          ((stream-empty? s1)
+           (printf "Stream finished\n"))
+          (else
+            (begin (printf "~a\n" (stream-first s1))
+                   (stream-print (- num-values 1)
+                                 (stream-rest s1))))))
 
-;(define s1 (stream 'a 'b 'c 'd 'e))
-;(define s2 (stream 1 2 3 4 5))
+(define s1 (stream 'a 'b 'c 'd 'e))
+(define s2 (stream 1 2 3 4 5))
 ;(define result (stream-join s1 s2))
+;(newline)
 ;(stream-print 30 result)
+(stream-print 30 (stream-join s1 s2))
+(stream-print 30 (stream-join the-empty-stream s2))
+(stream-print 30 (stream-join s2 the-empty-stream ))

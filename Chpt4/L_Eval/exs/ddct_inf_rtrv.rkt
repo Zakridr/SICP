@@ -74,133 +74,135 @@
 
 ; 4.56
 ;a. supervised by Ben Bitddile w/ address
+(and-new (supervisor ?person (Bitdiddle Ben))
+     (address ?person ?where))
 (and (supervisor ?person (Bitdiddle Ben))
      (address ?person ?where))
 
-;b all peopple with salary less than BB's, along with their salary and BB's
-(and (salary (Bitdiddle Ben) ?bb-sal)
-     (salary ?x ?x-sal)
-     (lisp-value > ?bb-sal ?x-sal))
-
-;c all ppl supervised by someone outside of comp division
-(and (supervisor ?s-ee ?s-or)
-     (not (job ?s-or (computer . ?type)))
-     (job ?s-or ?job))
-
-; rules
-
-(assert! (rule (same ?x ?x)))
-(assert! (rule (lives-near ?person-1 ?person-2)
-      (and (address ?person-1 (?town . ?rest-1))
-           (address ?person-2 (?town . ?rest-2))
-           (not (same ?person-1 ?person-2)))))
-
-(lives-near ?x ?y)
-
-(assert! (rule (wheel ?person)
-      (and (supervisor ?middle-manager ?person)
-           (supervisor ?x ?middle-manager))))
-
-(wheel ?who)
-; general rule form: (rule <conclusion> <body>)
-
-(rule (outranked-by ?staff-person ?boss)
-      (or (supervisor ?staff-person ?boss)
-          (and (supervisor ?staff-person ?middle-manager)
-               (outranked-by ?middle-manager ?boss))))
-
-(rule (dork ben-bit))
-(dork ?x)
-
-(outranked-by ?x ?y)
-
-; 4.57
-(can-do-job ?x ?y)
-(can-do-job (computer wizard) ?x)
-(assert! (rule (can-replace ?p1 ?p2)
-      (and (and (job ?p1 ?j1)
-                (job ?p2 ?j2)
-                (or (can-do-job ?j1 ?j2)
-                    (same ?j1 ?j2)))
-           (not (same ?p1 ?p2)))))
-(can-replace ?x (Fect Cy D))
-(and (can-replace ?p1 ?p2)
-     (salary ?p1 ?s1)
-     (salary ?p2 ?s2)
-     (lisp-value < ?s1 ?s2))
-
-; 4.58
-
-(assert! (rule (big-shot ?person ?div)
-      (and (job ?person (?div . ?type))
-           (not (and (supervisor ?person ?manager)
-                     (job ?manager (?div . ?other)))))))
-(big-shot ?x ?y)
-
-; 4.59
-(meeting accounting (Monday 9am))
-(meeting administration (Monday 10am))
-(meeting computer (Wednesday 3pm))
-(meeting administration (Friday 1pm))
-(meeting whole-company (Wednesday 4pm))
-;a
-(meeting ?div (Friday ?time))
-;b
-(rule (meeting-time ?person ?day-and-time)
-      (or (meeting whole-company ?day-and-time)
-          (and (job ?person (?div . ?type)) 
-               (meeting ?div ?day-and-time))))
-; c
-(meeting-time (Hacker Alyssa P) ?day-and-time)
-
- ;4.60
-; duplication of results:
-(lives-near ?p1 ?p2)
-; is there a method to avoid redundancy here?
-
-
-
-; 4.64
-(assert! (rule (outranked-by ?staff ?boss)
-      (or (supervisor ?staff ?boss)
-          (and (outranked-by ?middle-manager ?boss)
-               (supervisor ?staff
-                           ?middle-manager)))))
-
-;(outranked-by (Bitdiddle Ben) ?who)
-
-; This enters an infinite loop, becuase the first branch of the and
-; matches no assertions, but it does match the rule.
-
-; From the beginning:
-; Go through assertions, find nothing.
-; Go through rules, find this rule. Do the first branch of the or in //.
-; As for the second branch of the or, first branch of and, when we 
-; unify 
-; (outranked-by (Bitdiddle Ben) ?who) with
-; (outranked-by ?middle-manager ?boss), we just get the original pattern
-; back, more or less. This then goes through again... and again...
-
-; 4.65
-(wheel ?who)
-
-
-(rule (wheel ?person)
-      (and (supervisor ?middle-manager ?person)
-           (supervisor ?x ?middle-manager)))
-
-; Trace through execution. Warbucks supervises BB, who supervises 3 people
-; -> his name comes up three times there.
-; Warbucks supervises Scrooge who supervises Cratchet -> his name comes
-; up again.
-; BB only has one minion w/ a minion: Hacker who supervises Louis.
-
-; 4.75
-; syntax for singleton results
-(unique (job (Bitdiddle Ben) ?x))
-
-(unique (job ?x (computer programmer)))
-(and (job ?x ?j) (unique (job ?anyone ?j)))
-
-(and (supervisor ?minion ?boss)
-     (unique (supervisor ?anyone ?boss)))
+;;b all peopple with salary less than BB's, along with their salary and BB's
+;(and (salary (Bitdiddle Ben) ?bb-sal)
+;     (salary ?x ?x-sal)
+;     (lisp-value > ?bb-sal ?x-sal))
+;
+;;c all ppl supervised by someone outside of comp division
+;(and (supervisor ?s-ee ?s-or)
+;     (not (job ?s-or (computer . ?type)))
+;     (job ?s-or ?job))
+;
+;; rules
+;
+;(assert! (rule (same ?x ?x)))
+;(assert! (rule (lives-near ?person-1 ?person-2)
+;      (and (address ?person-1 (?town . ?rest-1))
+;           (address ?person-2 (?town . ?rest-2))
+;           (not (same ?person-1 ?person-2)))))
+;
+;(lives-near ?x ?y)
+;
+;(assert! (rule (wheel ?person)
+;      (and (supervisor ?middle-manager ?person)
+;           (supervisor ?x ?middle-manager))))
+;
+;(wheel ?who)
+;; general rule form: (rule <conclusion> <body>)
+;
+;(rule (outranked-by ?staff-person ?boss)
+;      (or (supervisor ?staff-person ?boss)
+;          (and (supervisor ?staff-person ?middle-manager)
+;               (outranked-by ?middle-manager ?boss))))
+;
+;(rule (dork ben-bit))
+;(dork ?x)
+;
+;(outranked-by ?x ?y)
+;
+;; 4.57
+;(can-do-job ?x ?y)
+;(can-do-job (computer wizard) ?x)
+;(assert! (rule (can-replace ?p1 ?p2)
+;      (and (and (job ?p1 ?j1)
+;                (job ?p2 ?j2)
+;                (or (can-do-job ?j1 ?j2)
+;                    (same ?j1 ?j2)))
+;           (not (same ?p1 ?p2)))))
+;(can-replace ?x (Fect Cy D))
+;(and (can-replace ?p1 ?p2)
+;     (salary ?p1 ?s1)
+;     (salary ?p2 ?s2)
+;     (lisp-value < ?s1 ?s2))
+;
+;; 4.58
+;
+;(assert! (rule (big-shot ?person ?div)
+;      (and (job ?person (?div . ?type))
+;           (not (and (supervisor ?person ?manager)
+;                     (job ?manager (?div . ?other)))))))
+;(big-shot ?x ?y)
+;
+;; 4.59
+;(meeting accounting (Monday 9am))
+;(meeting administration (Monday 10am))
+;(meeting computer (Wednesday 3pm))
+;(meeting administration (Friday 1pm))
+;(meeting whole-company (Wednesday 4pm))
+;;a
+;(meeting ?div (Friday ?time))
+;;b
+;(rule (meeting-time ?person ?day-and-time)
+;      (or (meeting whole-company ?day-and-time)
+;          (and (job ?person (?div . ?type)) 
+;               (meeting ?div ?day-and-time))))
+;; c
+;(meeting-time (Hacker Alyssa P) ?day-and-time)
+;
+; ;4.60
+;; duplication of results:
+;(lives-near ?p1 ?p2)
+;; is there a method to avoid redundancy here?
+;
+;
+;
+;; 4.64
+;(assert! (rule (outranked-by ?staff ?boss)
+;      (or (supervisor ?staff ?boss)
+;          (and (outranked-by ?middle-manager ?boss)
+;               (supervisor ?staff
+;                           ?middle-manager)))))
+;
+;;(outranked-by (Bitdiddle Ben) ?who)
+;
+;; This enters an infinite loop, becuase the first branch of the and
+;; matches no assertions, but it does match the rule.
+;
+;; From the beginning:
+;; Go through assertions, find nothing.
+;; Go through rules, find this rule. Do the first branch of the or in //.
+;; As for the second branch of the or, first branch of and, when we 
+;; unify 
+;; (outranked-by (Bitdiddle Ben) ?who) with
+;; (outranked-by ?middle-manager ?boss), we just get the original pattern
+;; back, more or less. This then goes through again... and again...
+;
+;; 4.65
+;(wheel ?who)
+;
+;
+;(rule (wheel ?person)
+;      (and (supervisor ?middle-manager ?person)
+;           (supervisor ?x ?middle-manager)))
+;
+;; Trace through execution. Warbucks supervises BB, who supervises 3 people
+;; -> his name comes up three times there.
+;; Warbucks supervises Scrooge who supervises Cratchet -> his name comes
+;; up again.
+;; BB only has one minion w/ a minion: Hacker who supervises Louis.
+;
+;; 4.75
+;; syntax for singleton results
+;(unique (job (Bitdiddle Ben) ?x))
+;
+;(unique (job ?x (computer programmer)))
+;(and (job ?x ?j) (unique (job ?anyone ?j)))
+;
+;(and (supervisor ?minion ?boss)
+;     (unique (supervisor ?anyone ?boss)))
