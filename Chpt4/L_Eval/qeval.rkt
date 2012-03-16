@@ -72,7 +72,31 @@
         the-empty-stream))
     frame-stream))
 
-; need to apply eval in a 'namespace'
+; 4.76
+
+(define (merge-frames frame1 frame2)
+  (if (stream-empty? frame1)
+    frame2
+    (let ((binding (car frame1)))
+      (let ((result (extend-if-possible (binding-variable binding)
+                                        (binding-value binding)
+                                        frame2)))
+        (if (eq? 'failed result)
+          the-empty-stream
+          (merge-frames (cdr frame1) frame2))))))
+
+(define (new-conjoin conjuncts frame-stream)
+  (if (empty? conjuncts)
+      frame-stream
+      (let ((first-stream (qeval (first-conjunct conjuncts) frame-stream)))
+        (if (empty? (rest-conjuncts conjuncts))
+          first-stream
+          (simple-stream-flatmap merge-frames 
+                                 (stream-join first-stream
+                                              (new-conjoin (rest-conjuncts conjuncts) frame-stream)))))))
+
+; stream-join should join two streams in a sql sense, apply 
+
 (define base-ns (make-base-namespace))
 
 (define (execute exp)
